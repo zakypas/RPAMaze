@@ -77,7 +77,7 @@ namespace ConsoleApplication1
             {
                 MazeSteps(maze, row, col = (col + 1));
             }
-            // BOTTOM
+            // BOTTOM when its 2
             if (maze[(row - 1), col] == 2)
             {
                 MazeSteps(maze, row + 1, col);
