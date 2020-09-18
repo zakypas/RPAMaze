@@ -1,0 +1,117 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.IO;
+
+namespace ConsoleApplication1
+{
+    class MazeSolver
+    {
+        static void Main()
+        {
+            string[] lines = File.ReadAllLines(@"C:\Users\User\Documents\RPAMaze.txt"); // Define RPAMaze.txt location
+            string[] measurements = lines[0].Split(' ');
+            int high = Int32.Parse(measurements[0]);
+            int width = Int32.Parse(measurements[1]);
+            int[,] maze = new int[high, width];
+            for (int i = 1; i < high+1; i++)
+            {
+                string[] number = lines[i].Split(' ');
+                for (int j = 0; j < width; j++)
+                {
+                    maze[i-1,j] = Int32.Parse(number[j]);
+                    Console.Write(maze[i - 1, j] + " ");
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine();
+            Console.Write("Type row where you want to place 2 (1 - " + high + "): ");
+            string highline = Console.ReadLine();
+            int startrow = Convert.ToInt32(highline)-1;
+            Console.Write("Type column where you want to place 2 (1 - " + width + "): ");
+            string widthline = Console.ReadLine();
+            int startcol = Convert.ToInt32(widthline)-1;
+            Console.WriteLine();
+            MazeSteps(maze, startrow, startcol);
+        }
+        private static void MazeSteps(int[,] maze, int row, int col)
+        {
+            maze[row, col] = 2;
+            Print(maze);
+            Console.ReadKey();
+            Console.WriteLine();
+            if (maze.GetLength(0) == row + 1 || maze.GetLength(1) == col + 1 || row == 0 || col == 0)
+            {
+                Console.Write("Found the exit!");
+                Console.ReadKey();
+                Environment.Exit(0);
+            }
+            // TOP when its 0
+            if (maze[(row - 1), col] == 0)
+            {
+                MazeSteps(maze, row - 1, col);
+            }
+            // RIGHT when its 0
+            if (maze[row, (col + 1)] == 0)
+            {
+                MazeSteps(maze, row, col = (col + 1));
+            }
+            // BOTTOM when its 0
+            if (maze[(row + 1), col] == 0)
+            {
+                MazeSteps(maze, row + 1, col);
+            }
+            // LEFT when its 0
+            if (maze[row, (col - 1)] == 0)
+            {
+                MazeSteps(maze, row, col - 1);
+            }
+            // TOP when its 2
+            if (maze[(row - 1), col] == 2)
+            {
+                MazeSteps(maze, row - 1, col);
+            }
+            // RIGHT when its 2
+            if (maze[(row - 1), col] == 2)
+            {
+                MazeSteps(maze, row, col = (col + 1));
+            }
+            // BOTTOM
+            if (maze[(row - 1), col] == 2)
+            {
+                MazeSteps(maze, row + 1, col);
+            }
+            // LEFT when its 2
+            if (maze[(row - 1), col] == 2)
+            {
+                MazeSteps(maze, row, col - 1);
+            }
+            maze[row, col] = 8;
+        }
+        private static void Print<T>(T[,] matrix)
+        {
+            StreamWriter Log;
+            if (!File.Exists(@"C:\Users\User\Documents\Log.txt")) // Define where to save Log.txt
+            {
+                Log = new StreamWriter(@"C:\Users\User\Documents\Log.txt");// Define where to save Log.txt
+            }
+            else
+            {
+                Log = File.AppendText(@"C:\Users\User\Documents\Log.txt");// Define where to save Log.txt
+            }
+            for (int i = 0; i < matrix.GetLength(0); i++)
+            {
+                for (int j = 0; j < matrix.GetLength(1); j++)
+                {
+                    Console.Write(matrix[i, j] + " ");
+                    Log.Write(matrix[i, j] + " ");
+                }
+                Console.WriteLine();
+                Log.WriteLine();
+            }
+            Log.WriteLine(Environment.NewLine);
+            Log.Close();
+        }
+    }
+}
